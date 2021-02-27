@@ -6,7 +6,8 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "tsc",
-    "dev": "ts-node-dev --respawn --transpile-only --no-notify src"
+    "dev": "cross-env NODE_ENV=development ts-node-dev --respawn --transpile-only --no-notify src",
+    "start": "cross-env NODE_ENV=production node dist"
   },
   "keywords": [
     "NodeJs",
@@ -24,6 +25,7 @@
     "@types/mongoose": "^5.10.3",
     "@types/morgan": "^1.9.2",
     "@types/node": "^14.14.31",
+    "cross-env": "^7.0.3",
     "ts-node-dev": "^1.1.6",
     "typescript": "^4.2.2"
   },
