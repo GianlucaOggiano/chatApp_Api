@@ -2,19 +2,18 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import logger from 'morgan';
+import { PORT, PROTOCOL, HOST, CORS_OPTIONS, IS_DEVELOPMENT } from './config';
 
 const app: Application = express();
 
-app.use(logger('dev'));
+IS_DEVELOPMENT ? app.use(logger('dev')) : null;
 app.use(helmet());
-app.use(cors());
+app.use(cors(CORS_OPTIONS));
 
 app.get('/', (req, res, next) => {
   res.json({ message: 'Welcome on chat group API!' });
 });
 
-const PORT = process.env.PORT || 1234;
-
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on ${PROTOCOL}://${HOST}:${PORT}`);
 });
