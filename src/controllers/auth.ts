@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { HttpException } from '../error';
+import { setLogged } from '../helpers/auth';
 import { User } from '../models';
 import { signinValidator, signupValidator, validate } from '../validators';
 
@@ -24,7 +25,7 @@ export const signUp = async (
       password,
     });
     await newUser.save();
-    req.session.userId = newUser.id;
+    setLogged(req, newUser.id);
 
     res.json(newUser);
   } catch (error) {
@@ -46,9 +47,19 @@ export const signIn = async (
       throw new HttpException(422, 'Invalid email or password.Please retry.');
     }
 
-    req.session.userId = user.id;
+    setLogged(req, user.id);
     res.json(user);
   } catch (error) {
     next(error);
   }
+};
+
+export const logout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  await req.session.destroy((err) => console.log(err));
+  res.clearCookie('sid'); //TODO:see this
+  res.json({ success: true });
 };
