@@ -1,18 +1,10 @@
-import { hash } from 'bcryptjs';
-import { Schema, model, Document } from 'mongoose';
+import { compare, hash } from 'bcryptjs';
+import { Schema, model } from 'mongoose';
+import { UserDocument } from '../types';
 
-export interface UserDocument extends Document {
-  displayName: string;
-  email: string;
-  password: string;
-  bio: string;
-  photoURL: string;
-  phoneNumber: string;
-}
-
-const UserSchema = new Schema(
+const UserSchema: Schema<UserDocument> = new Schema(
   {
-    displayName: { type: String, required: true },
+    displayName: { type: String },
     email: { type: String, required: true },
     password: { type: String, required: true },
     bio: { type: String },
@@ -27,5 +19,9 @@ UserSchema.pre<UserDocument>('save', async function () {
     this.password = await hash(this.password, 12);
   }
 });
+
+UserSchema.methods.matchesPassword = function (password: string) {
+  return compare(password, this.password);
+};
 
 export const User = model<UserDocument>('User', UserSchema);
