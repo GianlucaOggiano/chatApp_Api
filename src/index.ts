@@ -16,6 +16,14 @@ import {
   SESSION_OPTIONS,
   CONNECT_MONGO_OPTIONS,
 } from './config';
+import { AuthRoutes, UserRoutes } from './routes';
+import { GlobalErrorHandler, NotFound } from './middleware/errors';
+
+declare module 'express-session' {
+  interface SessionData {
+    userId: string;
+  }
+}
 
 (async () => {
   try {
@@ -23,6 +31,7 @@ import {
     IS_DEVELOPMENT ? mongoose.set('debug', true) : null;
 
     const app: Application = express();
+    app.use(express.json());
 
     IS_DEVELOPMENT ? app.use(logger('dev')) : null;
     app.use(helmet());
@@ -36,8 +45,14 @@ import {
     );
 
     app.get('/', (req, res, next) => {
+      // console.log(req.session.userId);
       res.json({ message: 'Welcome on chat group API!' });
     });
+    app.use('/api/auth', AuthRoutes);
+    app.use('/api/user', UserRoutes);
+
+    app.use(NotFound);
+    app.use(GlobalErrorHandler);
 
     app.listen(PORT, () => {
       console.log(`Server running on ${PROTOCOL}://${HOST}:${PORT}`);

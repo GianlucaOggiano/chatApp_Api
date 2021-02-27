@@ -30,9 +30,14 @@ export const SESSION_OPTIONS: SessionOptions = {
   secret: SESSION_SECRET,
   saveUninitialized: false,
   resave: false,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24,
+  },
 };
 
 export const CONNECT_MONGO_OPTIONS: ConnectMongoOptions = {
   mongoUrl: MONGO_URI,
   collectionName: 'sessions',
+  ttl: 1000 * 60 * 60 * 24,
+  autoRemove: 'native',
 };
