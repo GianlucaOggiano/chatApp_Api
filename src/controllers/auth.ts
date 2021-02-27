@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import { HttpException } from '../error';
 import { User } from '../models';
-import { signupValidator, validate } from '../validators';
+import { signinValidator, signupValidator, validate } from '../validators';
 
 export const signUp = async (
   req: Request,
@@ -37,5 +37,18 @@ export const signIn = async (
   res: Response,
   next: NextFunction
 ) => {
-  res.json({ user: req.session.userId });
+  const { email, password } = req.body;
+  try {
+    await validate(signinValidator, { email, password });
+
+    const user = await User.findOne({ email });
+    if (!user || !(await user.matchesPassword(password))) {
+      throw new HttpException(422, 'Invalid email or password.Please retry.');
+    }
+
+    req.session.userId = user.id;
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
 };
