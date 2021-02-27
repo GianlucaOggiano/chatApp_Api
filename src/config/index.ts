@@ -1,5 +1,7 @@
+import { ConnectMongoOptions } from 'connect-mongo/build/main/lib/MongoStore';
 import { CorsOptions } from 'cors';
 import dotenv from 'dotenv';
+import { SessionOptions } from 'express-session';
 import { ConnectOptions } from 'mongoose';
 
 dotenv.config({
@@ -7,10 +9,11 @@ dotenv.config({
 });
 
 export const {
-  PORT,
-  PROTOCOL,
-  HOST,
+  PORT = 1234,
+  PROTOCOL = 'http',
+  HOST = 'localhost',
   MONGO_URI = 'mongodb://localhost:27017/chat-app',
+  SESSION_SECRET = 'super_secret_session',
 } = process.env;
 
 export const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
@@ -20,4 +23,16 @@ export const CORS_OPTIONS: CorsOptions = {};
 export const MONGO_OPTIONS: ConnectOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+};
+
+export const SESSION_OPTIONS: SessionOptions = {
+  name: 'sid',
+  secret: SESSION_SECRET,
+  saveUninitialized: false,
+  resave: false,
+};
+
+export const CONNECT_MONGO_OPTIONS: ConnectMongoOptions = {
+  mongoUrl: MONGO_URI,
+  collectionName: 'sessions',
 };
