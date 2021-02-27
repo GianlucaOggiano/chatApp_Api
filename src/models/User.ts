@@ -4,7 +4,7 @@ import { UserDocument } from '../types';
 
 const UserSchema: Schema<UserDocument> = new Schema(
   {
-    displayName: { type: String },
+    displayName: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
     bio: { type: String },
@@ -23,5 +23,9 @@ UserSchema.pre<UserDocument>('save', async function () {
 UserSchema.methods.matchesPassword = function (password: string) {
   return compare(password, this.password);
 };
+
+UserSchema.set('toJSON', {
+  transform: (doc: any, { __v, password, ...rest }: any, options: any) => rest,
+});
 
 export const User = model<UserDocument>('User', UserSchema);
