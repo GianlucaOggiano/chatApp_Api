@@ -7,9 +7,9 @@ const UserSchema: Schema<UserDocument> = new Schema(
     displayName: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    bio: { type: String },
-    photoURL: { type: String },
-    phoneNumber: { type: String },
+    bio: { type: String, default: '' },
+    photoURL: { type: String, default: '' },
+    phoneNumber: { type: String, default: '' },
   },
   { timestamps: true }
 );
