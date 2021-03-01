@@ -18,7 +18,7 @@ import {
   SESSION_OPTIONS,
   CONNECT_MONGO_OPTIONS,
 } from './config';
-import { AuthRoutes, UserRoutes } from './routes';
+import { AuthRoutes, UserRoutes, ChannelRoutes } from './routes';
 import { GlobalErrorHandler, NotFound } from './middleware/errors';
 import { isAuth } from './middleware/auth';
 
@@ -63,6 +63,7 @@ declare module 'express-session' {
     });
     app.use('/api/auth', AuthRoutes);
     app.use('/api/user', UserRoutes);
+    app.use('/api/channel', ChannelRoutes);
 
     app.use(NotFound);
     app.use(GlobalErrorHandler);
